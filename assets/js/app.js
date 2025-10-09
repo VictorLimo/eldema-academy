@@ -127,37 +127,37 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-async function loadGalleryImages() {
-    const galleryContainer = document.querySelector('.gallery-content');
-    if (!galleryContainer) return;
+// async function loadGalleryImages() {
+//     const galleryContainer = document.querySelector('.gallery-content');
+//     if (!galleryContainer) return;
 
-    try {
-        const response = await fetch('/.netlify/functions/list-gallery-images'); 
+//     try {
+//         const response = await fetch('/.netlify/functions/list-gallery-images'); 
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! Status: ${response.status}`);
+//         }
         
-        // The response body is the array of image filenames
-        const imageFiles = await response.json();
+//         // The response body is the array of image filenames
+//         const imageFiles = await response.json();
 
-        let imageMarkup = '';
-        imageFiles.forEach(fileName => {
-            const imagePath = `../assets/images/gallery/${fileName}`;
-            imageMarkup += `<img src="${imagePath}" alt="Eldema Letap Academy Gallery Photo" class="scroll-reveal fade-in">`;
-        });
+//         let imageMarkup = '';
+//         imageFiles.forEach(fileName => {
+//             const imagePath = `../assets/images/gallery/${fileName}`;
+//             imageMarkup += `<img src="${imagePath}" alt="Eldema Letap Academy Gallery Photo" class="scroll-reveal fade-in">`;
+//         });
 
-        galleryContainer.innerHTML = imageMarkup;
+//         galleryContainer.innerHTML = imageMarkup;
         
-        if (typeof initializeScrollReveal === 'function') {
-             initializeScrollReveal(); 
-        }
+//         if (typeof initializeScrollReveal === 'function') {
+//              initializeScrollReveal(); 
+//         }
         
-    } catch (error) {
-        console.error('Failed to load gallery images:', error);
-        galleryContainer.innerHTML = '<p class="text-danger text-center p-5">Could not load gallery images. Please check the function deployment.</p>';
-    }
-}
+//     } catch (error) {
+//         console.error('Failed to load gallery images:', error);
+//         galleryContainer.innerHTML = '<p class="text-danger text-center p-5">Could not load gallery images. Please check the function deployment.</p>';
+//     }
+// }
 
 // Init
 document.addEventListener('DOMContentLoaded', () => {
