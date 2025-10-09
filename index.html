@@ -13,7 +13,10 @@
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
-    <meta name="google-site-verification" content="ZE9rNAlYoqjbLabdKTvdARfI6dBkoNJZ_kAL1upaSMM" />
+    <meta
+      name="google-site-verification"
+      content="ZE9rNAlYoqjbLabdKTvdARfI6dBkoNJZ_kAL1upaSMM"
+    />
     <meta
       property="og:image"
       content="https://eldema-letap-academy.vercel.app/assets/images/logo.jpg"
@@ -58,20 +61,157 @@
   <body>
     <nav id="nav" class="sticky-top"></nav>
 
+    <style>
+      /* Hero carousel styles (uses site variables from styles.css) */
+      .hero-carousel {
+        position: relative;
+        height: 85vh;
+        min-height: 420px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-    <section class="section hero-section">
-      <div class="hero-content">
-        <h1 class="headline scroll-reveal fade-in">We Deliver Quality Education</h1>
-        <p class="scroll-reveal fade-in">
-          Eldema Letap Academy is a community based education institution
-          started in year 2005 it supports children from 3 years to 15 years
-          mostly from poor and humble backgrounds to achieve universal basic
-          education at and affordable rate.
+      .hero-carousel .slides {
+        position: absolute;
+        inset: 0;
+      }
+
+      .hero-carousel .slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .hero-carousel .slide.active {
+        opacity: 1;
+        z-index: 1;
+      }
+
+      .hero-carousel .overlay-gradient {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(14, 36, 49, 0.25),
+          rgba(14, 36, 49, 0.55)
+        );
+        z-index: 2;
+      }
+
+      .hero-carousel .hero-inner {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        color: var(--color-secondary);
+        padding: 2rem;
+        max-width: 980px;
+      }
+
+      .hero-carousel h1 {
+        font-family: var(--font-secondary);
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        line-height: 1.05;
+        margin-bottom: 1rem;
+        color: var(--color-secondary);
+        text-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      }
+
+      .hero-carousel p.lead {
+        font-family: var(--font-primary);
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 1.125rem;
+        margin-bottom: 1.25rem;
+        max-width: 820px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-carousel .cta-row {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 0.75rem;
+      }
+
+      .hero-carousel .btn-hero {
+        padding: 0.9rem 1.4rem;
+        border-radius: 40px;
+        font-weight: 600;
+      }
+
+      .hero-carousel .btn-primary-hero {
+        background: var(--color-primary);
+        color: var(--color-secondary);
+        border: none;
+      }
+
+      .hero-carousel .btn-outline-hero {
+        background: transparent;
+        color: var(--color-secondary);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .hero-carousel .controls {
+        position: absolute;
+        bottom: 18px;
+        right: 18px;
+        z-index: 4;
+        display: flex;
+        gap: 8px;
+      }
+
+      .hero-carousel .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .hero-carousel .dot.active {
+        background: var(--color-primary);
+      }
+
+      @media (max-width: 768px) {
+        .hero-carousel h1 {
+          font-size: 2rem;
+        }
+        .hero-carousel p.lead {
+          font-size: 1rem;
+        }
+      }
+    </style>
+
+    <section class="section hero-carousel" aria-label="Hero carousel">
+      <div class="slides" id="hero-slides" aria-hidden="true">
+        <!-- slides injected by JS -->
+      </div>
+
+      <div class="overlay-gradient" aria-hidden="true"></div>
+
+      <div class="hero-inner">
+        <h1 class="headline">We Deliver Quality Education</h1>
+        <p class="lead">
+          Eldema Letap Academy has been nurturing young minds since 2005. We
+          provide balanced curriculum, safe learning spaces and opportunities
+          for children from humble backgrounds to thrive.
         </p>
 
-        <a href="./about-us/" class="btn-learn-more cta-button scroll-reveal fade-in">Learn More</a>
+        <div class="cta-row">
+          <a href="./about-us/" class="btn-hero btn-primary-hero">Learn More</a>
+          <a href="./contact-us/" class="btn-hero btn-outline-hero"
+            >Contact Us</a
+          >
+        </div>
       </div>
-      <div class="overlay"></div>
+
+      <div class="controls" id="hero-dots" aria-hidden="true"></div>
     </section>
 
     <section class="section section-features">
@@ -142,8 +282,8 @@
                     <a href="#" target="_blank">VICTOR LIMO</a>
                   </div>
                   <p class="review-text">
-                    Eldema Letap is making great strides in providing quality primary
-                    education.
+                    Eldema Letap is making great strides in providing quality
+                    primary education.
                   </p>
                 </div>
               </div>
@@ -182,7 +322,9 @@
                     <i class="icon bi bi-star-fill"></i>
                   </div>
                   <div class="reviewer">
-                    <a href="https://g.co/kgs/b59LmNk" target="_blank">Mitesh Patel</a>
+                    <a href="https://g.co/kgs/b59LmNk" target="_blank"
+                      >Mitesh Patel</a
+                    >
                   </div>
                   <p class="review-text">Where dreams are valid.</p>
                 </div>
@@ -324,26 +466,36 @@
 
     <section id="our-partners" class="partners-section">
       <div class="container">
-          <h2 class="scroll-reveal from-top">Our Valued Partners</h2>
-          <p class="section-description scroll-reveal fade-in">
-              Eldema Letap Academy is incredibly grateful for the support and collaboration of our partners. Their contributions are vital in helping us achieve our mission of providing quality education and fostering community development.
+        <h2 class="scroll-reveal from-top">Our Valued Partners</h2>
+        <p class="section-description scroll-reveal fade-in">
+          Eldema Letap Academy is incredibly grateful for the support and
+          collaboration of our partners. Their contributions are vital in
+          helping us achieve our mission of providing quality education and
+          fostering community development.
+        </p>
+
+        <div class="partners-grid">
+          <div class="partner-card scroll-reveal from-bottom"></div>
+        </div>
+        <div class="call-to-action scroll-reveal fade-in">
+          <h3>Interested in Partnering with Us?</h3>
+          <p>
+            Eldema Letap Academy welcomes collaborations that align with our
+            vision and values. If you or your organization are interested in
+            making a difference, please reach out.
           </p>
+          <a
+            href="mailto:johnkibali@eldemaletapacademy.org?subject=Partnership%20Inquiry%20from%20Eldema%20Letap%20Academy%20Website"
+            class="cta-button-p"
+            >Email Director</a
+          >
+        </div>
+      </div>
+    </section>
 
-          <div class="partners-grid">
-            <div class="partner-card scroll-reveal from-bottom">
-          </div>
+    <div id="footer-placeholder"></div>
 
-              </div> <div class="call-to-action scroll-reveal fade-in">
-              <h3>Interested in Partnering with Us?</h3>
-              <p>Eldema Letap Academy welcomes collaborations that align with our vision and values. If you or your organization are interested in making a difference, please reach out.</p>
-              <a href="mailto:johnkibali@eldemaletapacademy.org?subject=Partnership%20Inquiry%20from%20Eldema%20Letap%20Academy%20Website" class="cta-button-p">Email Director</a>
-          </div>
-
-      </div> </section>
-
-    <div id="footer-placeholder">
-    </div>
-
+    <script src="./assets/js/hero-carousel.js"></script>
     <script src="./assets/js/app.js"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

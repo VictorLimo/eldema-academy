@@ -1,8 +1,5 @@
 const nodemailer = require("nodemailer");
 
-// Netlify Function to accept application submissions and send emails.
-// Mirrors the behavior of api/submit-application.js so the project works
-// on both Vercel (/api/) and Netlify (/netlify/functions/).
 
 const createTransporter = () => {
   return nodemailer.createTransport({
@@ -65,8 +62,8 @@ exports.handler = async function (event, context) {
     const transporter = createTransporter();
 
     const staffMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.STAFF_EMAIL_RECIPIENT || "georgeongoro9@gmail.com",
+      from: `"Eldema Letap" <${process.env.EMAIL_USER}>`,
+      to: process.env.STAFF_EMAIL_RECIPIENT || "eldemaletapacademy@gmail.com <Eldema Letap>",
       subject: `NEW VOLUNTEER APPLICATION: ${formData.full_name}`,
       html: `
                 <h2>A New Volunteer Application Has Arrived!</h2>
@@ -79,7 +76,6 @@ exports.handler = async function (event, context) {
                 <p><strong>Motivation:</strong> ${(formData.motivation || "")
                   .toString()
                   .substring(0, 150)}...</p>
-                <p>Log in to the admin panel to view the full details and process the placement.</p>
             `,
     };
 
