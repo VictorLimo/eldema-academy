@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 4. Asynchronous Submission
       try {
-        const response = await fetch("/submit-application", {
+        const response = await fetch("/.netlify/functions/submit-application", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -222,7 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (response.ok) {
           // Success Handler
-          // The success message uses a Bootstrap Icon (bi-check-circle-fill)
           applicationForm.innerHTML = `
                         <div class="success-message text-center">
                             <i class="bi bi-check-circle-fill" style="font-size: 4rem; color: var(--color-primary);"></i>
