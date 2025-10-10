@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Image Debugger - Eldema Letap Academy</title>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial; padding: 24px; background:#fff; color:#222 }
+      h1 { margin-bottom: 8px }
+      p { margin-top: 0 }
+      table { width:100%; border-collapse: collapse; margin-top: 16px }
+      th, td { border: 1px solid #eee; padding: 8px; text-align: left; vertical-align: middle }
+      th { background: #f7f7f7 }
+      img.thumb { max-width:120px; max-height:80px; display:block; }
+      .ok { color: green }
+      .bad { color: #c0392b }
+      .muted { color: #666; font-size: .9rem }
+      button { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; background: #f5f5f5; cursor: pointer }
+      button.primary { background: #10853b; color: #fff; border-color: #0d6b2b }
+      pre.headers { max-height: 180px; overflow: auto; background: #111; color: #eee; padding: 8px; border-radius:4px }
+    </style>
+  </head>
+  <body>
+    <h1>Image Debugger</h1>
+    <p>Attempts to fetch gallery images with <code>cache: 'no-store'</code> and shows response status/headers and a preview. Use this on production to find broken cached assets.</p>
+
+    <div>
+      <button id="runAll" class="primary">Run all checks</button>
+      <button id="clearResults">Clear results</button>
+    </div>
+
+    <table id="results">
+      <thead>
+        <tr>
+          <th>Preview</th>
+          <th>Filename</th>
+          <th>Requested URL</th>
+          <th>Status</th>
+          <th>Content-Length</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      (function(){
+        // List of images (keep in sync with gallery/hero scripts)
+        const images = [
+          '1738753971198.jpg',
+          'DSC_0357.jpg',
+          'DSC_0358.jpg',
+          'DSC_0359.jpg',
+          'DSC_0360.jpg',
+          'DSC_0377.jpg',
+          'DSC_0413_1.jpg',
+          'DSC_0419_1.jpg',
+          'DSC_0454.jpg',
+          'DSC_0500.jpg',
+          'DSC_0517.jpg',
+          'img1.jpg',
+          'img6.jpg'
+        ];
+
+        const tableBody = document.querySelector('#results tbody');
+        const runAllBtn = document.getElementById('runAll');
+        const clearBtn = document.getElementById('clearResults');
+
+        function makeRow(filename){
+          const tr = document.createElement('tr');
+
+          const previewTd = document.createElement('td');
+          previewTd.innerHTML = '<div class="muted">(no preview)</div>';
+
+          const nameTd = document.createElement('td');
+          nameTd.textContent = filename;
+
+          const urlTd = document.createElement('td');
+          const url = new URL('/assets/images/gallery/sports-day/'+filename, location.origin).href;
+          const a = document.createElement('a'); a.href = url; a.textContent = url; a.target = '_blank'; a.rel='noopener';
+          urlTd.appendChild(a);
+
+          const statusTd = document.createElement('td'); statusTd.textContent = '-';
+          const lengthTd = document.createElement('td'); lengthTd.textContent = '-';
+
+          const actionsTd = document.createElement('td');
+          const checkBtn = document.createElement('button'); checkBtn.textContent = 'Check';
+          checkBtn.addEventListener('click', () => runCheck(filename, tr));
+          const headersBtn = document.createElement('button'); headersBtn.textContent = 'Headers'; headersBtn.style.marginLeft='8px';
+          headersBtn.addEventListener('click', () => showHeaders(tr));
+          actionsTd.appendChild(checkBtn);
+          actionsTd.appendChild(headersBtn);
+
+          tr.appendChild(previewTd);
+          tr.appendChild(nameTd);
+          tr.appendChild(urlTd);
+          tr.appendChild(statusTd);
+          tr.appendChild(lengthTd);
+          tr.appendChild(actionsTd);
+
+          // attach meta container
+          tr._meta = { filename, url, previewTd, statusTd, lengthTd, headers: null };
+
+          return tr;
+        }
+
+        function showHeaders(tr){
+          if (!tr._meta || !tr._meta.headers) return alert('No headers yet. Run a check first.');
+          const w = window.open('', '_blank');
+          w.document.title = 'Headers - ' + tr._meta.filename;
+          const pre = w.document.createElement('pre'); pre.className='headers';
+          pre.textContent = JSON.stringify(tr._meta.headers, null, 2);
+          w.document.body.appendChild(pre);
+        }
+
+        function renderPreviewFromBlob(tr, blob){
+          const url = URL.createObjectURL(blob);
+          tr._meta.previewTd.innerHTML = '';
+          const img = document.createElement('img'); img.className='thumb'; img.src = url; img.alt = tr._meta.filename;
+          tr._meta.previewTd.appendChild(img);
+        }
+
+        function runCheck(filename, tr) {
+          const url = new URL('/assets/images/gallery/sports-day/'+filename, location.origin).href;
+          tr._meta.statusTd.textContent = 'Fetching...';
+          tr._meta.lengthTd.textContent = '-';
+
+          // First try: fetch with no-store to force fresh copy
+          fetch(url, { cache: 'no-store' })
+            .then(res => {
+              tr._meta.headers = {};
+              res.headers.forEach((v,k)=> tr._meta.headers[k]=v);
+              tr._meta.statusTd.textContent = res.status + ' ' + res.statusText;
+              tr._meta.lengthTd.textContent = res.headers.get('content-length') || '-';
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+              return res.blob();
+            })
+            .then(blob => {
+              renderPreviewFromBlob(tr, blob);
+            })
+            .catch(err => {
+              tr._meta.statusTd.textContent = 'Error';
+              tr._meta.previewTd.innerHTML = '<div class="bad">Failed to fetch</div>';
+              console.error('Fetch failed for', url, err);
+            });
+        }
+
+        // populate table
+        images.forEach(fn => tableBody.appendChild(makeRow(fn)));
+
+        runAllBtn.addEventListener('click', function(){
+          Array.from(tableBody.children).forEach(tr => runCheck(tr._meta.filename, tr));
+        });
+        clearBtn.addEventListener('click', function(){ tableBody.innerHTML=''; images.forEach(fn=>tableBody.appendChild(makeRow(fn))); });
+
+      })();
+    </script>
+  </body>
+</html>
