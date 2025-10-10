@@ -7,18 +7,21 @@
 
   const images = [
     "1738753971198.jpg",
-    "DSC_0357.jpg",
-    "DSC_0358.jpg",
-    "DSC_0359.jpg",
-    "DSC_0360.jpg",
-    "DSC_0377.jpg",
-    "DSC_0413_1.jpg",
-    "DSC_0419_1.jpg",
-    "DSC_0454.jpg",
-    "DSC_0500.jpg",
-    "DSC_0517.jpg",
+    "sc1.jpg",
+    "sc2.jpg",
+    "sc3.jpg",
+    "sc4.jpg",
+    "sc5.jpg",
+    "sc6.jpg",
+    "sc7.jpg",
+    "sc8.jpg",
+    "sc9.jpg",
+    "sc10.jpg",
     "img1.jpg",
-    "img6.jpg",
+    "img2.jpg",
+    "img3.jpg",
+    "img4.jpg",
+    "img5.jpg",
   ];
 
   function createGalleryItem(src, alt) {
