@@ -62,6 +62,23 @@
           console.error(e);
         }
       });
+      // Final attempt: fetch with cache reload to bypass corrupted cached (304) responses
+      if (!div.__didFetchReload) {
+        div.__didFetchReload = true;
+        fetch(url, { cache: "reload" })
+          .then(function (res) {
+            if (!res.ok) throw new Error("Fetch failed: " + res.status);
+            return res.blob();
+          })
+          .then(function (blob) {
+            const blobUrl = URL.createObjectURL(blob);
+            div.style.backgroundImage = `url("${blobUrl}")`;
+            console.debug("Set hero slide background to fetched blob for", url);
+          })
+          .catch(function (err) {
+            console.error("Fetch-reload also failed for hero slide", url, err);
+          });
+      }
     };
     imgProbe.src = url;
     return div;

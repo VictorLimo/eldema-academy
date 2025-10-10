@@ -63,7 +63,30 @@
         }
       } else {
         console.warn("All retries failed for", img.alt || img.src);
-        img.removeEventListener("error", onImgError);
+        // Final attempt: fetch directly with cache reload to bypass a bad cached entry (304)
+        if (!img.__didFetchReload) {
+          img.__didFetchReload = true;
+          console.debug("Attempting fetch(cache: 'reload') for", img.src);
+          fetch(img.src, { cache: "reload" })
+            .then(function (res) {
+              if (!res.ok) throw new Error("Fetch failed: " + res.status);
+              return res.blob();
+            })
+            .then(function (blob) {
+              const blobUrl = URL.createObjectURL(blob);
+              console.debug(
+                "Fetched image blob, setting src to blob URL for",
+                img.alt || img.src
+              );
+              img.src = blobUrl;
+            })
+            .catch(function (err) {
+              console.error("Fetch-reload also failed for", img.src, err);
+              img.removeEventListener("error", onImgError);
+            });
+        } else {
+          img.removeEventListener("error", onImgError);
+        }
       }
     });
 
