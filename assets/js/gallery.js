@@ -64,7 +64,7 @@
         } catch (e) {
           console.error("Retry error", e);
         }
-      } else {
+      } else { 
         console.warn("All retries failed for", img.alt || img.src);
         // Final attempt: fetch directly with cache reload to bypass a bad cached entry (304)
         if (!img.__didFetchReload) {
