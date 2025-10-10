@@ -65,8 +65,16 @@
       // Final attempt: fetch with cache reload to bypass corrupted cached (304) responses
       if (!div.__didFetchReload) {
         div.__didFetchReload = true;
-        fetch(url, { cache: "reload" })
+        fetch(url, { cache: "no-store" })
           .then(function (res) {
+            console.debug(
+              "Hero fetch-reload response for",
+              url,
+              "status",
+              res.status,
+              "len",
+              res.headers.get("content-length")
+            );
             if (!res.ok) throw new Error("Fetch failed: " + res.status);
             return res.blob();
           })

@@ -67,8 +67,16 @@
         if (!img.__didFetchReload) {
           img.__didFetchReload = true;
           console.debug("Attempting fetch(cache: 'reload') for", img.src);
-          fetch(img.src, { cache: "reload" })
+          fetch(img.src, { cache: "no-store" })
             .then(function (res) {
+              console.debug(
+                "Fetch-reload response for",
+                img.src,
+                "status",
+                res.status,
+                "len",
+                res.headers.get("content-length")
+              );
               if (!res.ok) throw new Error("Fetch failed: " + res.status);
               return res.blob();
             })
