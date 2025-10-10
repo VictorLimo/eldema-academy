@@ -1,10 +1,6 @@
-// Gallery page script
-// Renders images from assets/images/gallery/sports-day into the .gallery-content element
-
 (function () {
-  const imageFolder = "../assets/images/gallery/sports-day/";
+  const imageFolder = "/assets/images/gallery/sports-day/";
 
-  // List of image filenames in the sports-day folder. Add/remove as needed.
   const images = [
     "1738753971198.jpg",
     "DSC_0357.JPG",

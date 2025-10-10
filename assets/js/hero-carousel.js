@@ -1,5 +1,5 @@
 (function () {
-  const imageFolder = "./assets/images/gallery/sports-day/";
+  const imageFolder = "/assets/images/gallery/sports-day/";
   const images = [
     "1738753971198.jpg",
     "DSC_0357.JPG",

@@ -96,7 +96,7 @@ exports.handler = async function (event, context) {
             `,
     };
 
-    // Send emails (send to staff first then to volunteer)
+    // Send emails 
     await transporter.sendMail(staffMailOptions);
     await transporter.sendMail(volunteerMailOptions);
 
