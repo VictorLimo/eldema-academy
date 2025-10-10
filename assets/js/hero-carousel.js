@@ -2,7 +2,7 @@
   const imageFolder = "/assets/images/gallery/sports-day/";
   const images = [
     "1738753971198.jpg",
-    "DSC_0357.JPG",
+    "DSC_0357.jpg",
     "DSC_0358.JPG",
     "DSC_0359.JPG",
     "DSC_0360.JPG",
