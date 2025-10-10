@@ -1,17 +1,21 @@
 (function () {
-  const imageFolder = "/assets/images/gallery/sports-day/";
+  // Resolve the images folder relative to this script so it works from any page
+  const scriptSrc =
+    (document.currentScript && document.currentScript.src) ||
+    window.location.href;
+  const imageFolder = new URL("../images/gallery/sports-day/", scriptSrc).href;
   const images = [
     "1738753971198.jpg",
     "DSC_0357.jpg",
-    "DSC_0358.JPG",
-    "DSC_0359.JPG",
-    "DSC_0360.JPG",
-    "DSC_0377.JPG",
-    "DSC_0413 (1).JPG",
-    "DSC_0419 (1).JPG",
-    "DSC_0454.JPG",
-    "DSC_0500.JPG",
-    "DSC_0517.JPG",
+    "DSC_0358.jpg",
+    "DSC_0359.jpg",
+    "DSC_0360.jpg",
+    "DSC_0377.jpg",
+    "DSC_0413 (1).jpg",
+    "DSC_0419 (1).jpg",
+    "DSC_0454.jpg",
+    "DSC_0500.jpg",
+    "DSC_0517.jpg",
     "img1.jpg",
     "img6.jpg",
   ];
@@ -23,7 +27,8 @@
   function createSlide(url, idx) {
     const div = document.createElement("div");
     div.className = "slide";
-    div.style.backgroundImage = `url(${url})`;
+    // Wrap URL in quotes to handle spaces and parentheses correctly in CSS
+    div.style.backgroundImage = `url("${url}")`;
     div.dataset.index = idx;
     return div;
   }
@@ -31,6 +36,7 @@
   function renderSlides(container) {
     container.innerHTML = "";
     images.forEach((name, i) => {
+      // Encode only the filename part to preserve folder structure
       const url = imageFolder + encodeURIComponent(name);
       const slide = createSlide(url, i);
       if (i === 0) slide.classList.add("active");

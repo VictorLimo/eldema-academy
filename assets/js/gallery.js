@@ -1,5 +1,9 @@
 (function () {
-  const imageFolder = "/assets/images/gallery/sports-day/";
+  // Resolve the images folder relative to this script so it works from any page
+  const scriptSrc =
+    (document.currentScript && document.currentScript.src) ||
+    window.location.href;
+  const imageFolder = new URL("../images/gallery/sports-day/", scriptSrc).href;
 
   const images = [
     "1738753971198.jpg",
@@ -100,6 +104,7 @@
     container.style.padding = "1rem";
 
     images.forEach(function (filename) {
+      // Encode the filename portion to ensure spaces and special chars are safe
       const path = imageFolder + encodeURIComponent(filename);
       const alt = filename.replace(/[-_\.]/g, " ");
       const item = createGalleryItem(path, alt);
