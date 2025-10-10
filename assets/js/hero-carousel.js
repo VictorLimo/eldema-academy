@@ -30,6 +30,40 @@
     // Wrap URL in quotes to handle spaces and parentheses correctly in CSS
     div.style.backgroundImage = `url("${url}")`;
     div.dataset.index = idx;
+    // Preload image to detect loading errors (CSS background-image doesn't fire error events)
+    const imgProbe = new Image();
+    imgProbe.onload = function () {
+      console.debug(
+        "Hero image preloaded:",
+        url,
+        imgProbe.naturalWidth,
+        imgProbe.naturalHeight
+      );
+    };
+    imgProbe.onerror = function () {
+      console.error("Hero slide failed to load:", url);
+      // Try encoded filename or cache-bust
+      const attempts = [
+        function () {
+          div.style.backgroundImage = `url("${encodeURI(url)}")`;
+        },
+        function () {
+          div.style.backgroundImage = `url("${url.replace(
+            /%20/g,
+            " "
+          )}?cb=${Date.now()}")`;
+        },
+      ];
+      // run attempts sequentially
+      attempts.forEach((fn) => {
+        try {
+          fn();
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    };
+    imgProbe.src = url;
     return div;
   }
 

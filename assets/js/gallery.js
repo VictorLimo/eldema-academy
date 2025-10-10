@@ -27,9 +27,55 @@
 
     const img = document.createElement("img");
     img.src = src;
+    console.debug("Gallery image src set:", src);
     img.alt = alt || "";
     img.className = "img-fluid rounded shadow-sm";
     img.style.cursor = "pointer";
+
+    // If the image fails to load, attempt a few fallbacks and log the failing URL
+    img.addEventListener("error", function onImgError() {
+      console.error("Gallery image failed to load:", img.src);
+      // Try alternative encodings / cache-bust attempts in sequence
+      const attempts = [
+        // Try encodeURI of full path
+        function () {
+          img.src = encodeURI(src);
+        },
+        // Try using unencoded filename (some servers expect raw names)
+        function () {
+          img.src = src.replace(/%20/g, " ");
+        },
+        // Try adding a timestamp to bypass caches (last resort)
+        function () {
+          img.src =
+            src + (src.indexOf("?") === -1 ? "?" : "&") + "cb=" + Date.now();
+        },
+      ];
+
+      // Run next attempt once (avoid infinite loop)
+      if (!img.__retryIndex) img.__retryIndex = 0;
+      if (img.__retryIndex < attempts.length) {
+        const fn = attempts[img.__retryIndex++];
+        try {
+          fn();
+        } catch (e) {
+          console.error("Retry error", e);
+        }
+      } else {
+        console.warn("All retries failed for", img.alt || img.src);
+        img.removeEventListener("error", onImgError);
+      }
+    });
+
+    img.addEventListener("load", function () {
+      console.debug(
+        "Gallery image loaded:",
+        img.src,
+        "natural size",
+        img.naturalWidth,
+        img.naturalHeight
+      );
+    });
 
     col.appendChild(img);
 
