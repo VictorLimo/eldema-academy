@@ -1,5 +1,4 @@
 (function () {
-  // Resolve the images folder relative to this script so it works from any page
   const scriptSrc =
     (document.currentScript && document.currentScript.src) ||
     window.location.href;
@@ -35,27 +34,24 @@
     img.className = "img-fluid rounded shadow-sm";
     img.style.cursor = "pointer";
 
-    // If the image fails to load, attempt a few fallbacks and log the failing URL
     img.addEventListener("error", function onImgError() {
       console.error("Gallery image failed to load:", img.src);
-      // Try alternative encodings / cache-bust attempts in sequence
+
       const attempts = [
-        // Try encodeURI of full path
         function () {
           img.src = encodeURI(src);
         },
-        // Try using unencoded filename (some servers expect raw names)
+
         function () {
           img.src = src.replace(/%20/g, " ");
         },
-        // Try adding a timestamp to bypass caches (last resort)
+
         function () {
           img.src =
             src + (src.indexOf("?") === -1 ? "?" : "&") + "cb=" + Date.now();
         },
       ];
 
-      // Run next attempt once (avoid infinite loop)
       if (!img.__retryIndex) img.__retryIndex = 0;
       if (img.__retryIndex < attempts.length) {
         const fn = attempts[img.__retryIndex++];
@@ -64,9 +60,9 @@
         } catch (e) {
           console.error("Retry error", e);
         }
-      } else { 
+      } else {
         console.warn("All retries failed for", img.alt || img.src);
-        // Final attempt: fetch directly with cache reload to bypass a bad cached entry (304)
+
         if (!img.__didFetchReload) {
           img.__didFetchReload = true;
           console.debug("Attempting fetch(cache: 'reload') for", img.src);
@@ -144,12 +140,10 @@
       img.style.borderRadius = "6px";
       overlay.appendChild(img);
 
-      // close on click outside image
       overlay.addEventListener("click", function (e) {
         if (e.target === overlay) closeLightbox();
       });
 
-      // close on ESC
       document.addEventListener("keydown", function onKey(e) {
         if (e.key === "Escape") closeLightbox();
       });
@@ -173,10 +167,8 @@
     const container = document.querySelector(".gallery-content");
     if (!container) return;
 
-    // Clear existing content
     container.innerHTML = "";
 
-    // Apply a responsive grid class if not present
     container.style.display = "grid";
     container.style.gridTemplateColumns =
       "repeat(auto-fit, minmax(240px, 1fr))";
@@ -184,14 +176,12 @@
     container.style.padding = "1rem";
 
     images.forEach(function (filename) {
-      // Encode the filename portion to ensure spaces and special chars are safe
       const path = imageFolder + encodeURIComponent(filename);
       const alt = filename.replace(/[-_\.]/g, " ");
       const item = createGalleryItem(path, alt);
       container.appendChild(item);
     });
 
-    // Lazy load images for performance
     if ("loading" in HTMLImageElement.prototype) {
       document
         .querySelectorAll(".gallery-content img")

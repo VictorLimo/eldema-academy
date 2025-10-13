@@ -26,14 +26,13 @@ const GALLERY_JS = path.join(__dirname, "..", "assets", "js", "gallery.js");
 const HERO_JS = path.join(__dirname, "..", "assets", "js", "hero-carousel.js");
 
 function safeName(name) {
-  // Replace spaces and parentheses and multiple dots; collapse multiple underscores
   const ext = path.extname(name);
   let base = path.basename(name, ext);
   base = base.replace(/[\s]+/g, "_");
   base = base.replace(/[()]/g, "_");
   base = base.replace(/[^a-zA-Z0-9_\-\.]/g, "");
   base = base.replace(/__+/g, "_");
-  // ensure we don't produce leading/trailing underscore garbage
+
   base = base.replace(/^_+|_+$/g, "");
   return base + ext.toLowerCase();
 }
@@ -42,7 +41,6 @@ function updateFileReferences(filePath, replacements) {
   let content = fs.readFileSync(filePath, "utf8");
   let changed = false;
   for (const [oldName, newName] of Object.entries(replacements)) {
-    // Replace exact occurrences inside quotes in JS arrays
     const escapedOld = oldName.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
     const regex = new RegExp("(['\"])" + escapedOld + "(['\"])", "g");
     if (regex.test(content)) {
@@ -90,7 +88,6 @@ function updateFileReferences(filePath, replacements) {
     return;
   }
 
-  // Update JS references
   if (fs.existsSync(GALLERY_JS)) updateFileReferences(GALLERY_JS, replacements);
   if (fs.existsSync(HERO_JS)) updateFileReferences(HERO_JS, replacements);
 

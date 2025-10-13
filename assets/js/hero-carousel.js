@@ -1,5 +1,4 @@
 (function () {
-  // Resolve the images folder relative to this script so it works from any page
   const scriptSrc =
     (document.currentScript && document.currentScript.src) ||
     window.location.href;
@@ -19,17 +18,17 @@
     "img1.jpg",
   ];
 
-  const slideInterval = 4000; // ms
+  const slideInterval = 4000;
   let current = 0;
   let timer = null;
 
   function createSlide(url, idx) {
     const div = document.createElement("div");
     div.className = "slide";
-    // Wrap URL in quotes to handle spaces and parentheses correctly in CSS
+
     div.style.backgroundImage = `url("${url}")`;
     div.dataset.index = idx;
-    // Preload image to detect loading errors (CSS background-image doesn't fire error events)
+
     const imgProbe = new Image();
     imgProbe.onload = function () {
       console.debug(
@@ -41,7 +40,7 @@
     };
     imgProbe.onerror = function () {
       console.error("Hero slide failed to load:", url);
-      // Try encoded filename or cache-bust
+
       const attempts = [
         function () {
           div.style.backgroundImage = `url("${encodeURI(url)}")`;
@@ -53,7 +52,7 @@
           )}?cb=${Date.now()}")`;
         },
       ];
-      // run attempts sequentially
+
       attempts.forEach((fn) => {
         try {
           fn();
@@ -61,7 +60,7 @@
           console.error(e);
         }
       });
-      // Final attempt: fetch with cache reload to bypass corrupted cached (304) responses
+
       if (!div.__didFetchReload) {
         div.__didFetchReload = true;
         fetch(url, { cache: "no-store" })
@@ -94,7 +93,6 @@
   function renderSlides(container) {
     container.innerHTML = "";
     images.forEach((name, i) => {
-      // Encode only the filename part to preserve folder structure
       const url = imageFolder + encodeURIComponent(name);
       const slide = createSlide(url, i);
       if (i === 0) slide.classList.add("active");
@@ -147,7 +145,6 @@
     renderDots(dotsContainer);
     startTimer();
 
-    // Pause on hover
     const hero = document.querySelector(".hero-carousel");
     hero.addEventListener("mouseenter", () => {
       if (timer) clearInterval(timer);

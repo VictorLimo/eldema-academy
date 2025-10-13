@@ -99,7 +99,6 @@
 
     <script>
       (function () {
-        // List of images (keep in sync with gallery/hero scripts)
         const images = [
           "1738753971198.jpg",
           "sc1.jpg",
@@ -164,7 +163,6 @@
           tr.appendChild(lengthTd);
           tr.appendChild(actionsTd);
 
-          // attach meta container
           tr._meta = {
             filename,
             url,
@@ -206,7 +204,6 @@
           tr._meta.statusTd.textContent = "Fetching...";
           tr._meta.lengthTd.textContent = "-";
 
-          // First try: fetch with no-store to force fresh copy
           fetch(url, { cache: "no-store" })
             .then((res) => {
               tr._meta.headers = {};
@@ -228,7 +225,6 @@
             });
         }
 
-        // populate table
         images.forEach((fn) => tableBody.appendChild(makeRow(fn)));
 
         runAllBtn.addEventListener("click", function () {

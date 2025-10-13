@@ -1,6 +1,5 @@
 const nodemailer = require("nodemailer");
 
-
 const createTransporter = () => {
   return nodemailer.createTransport({
     service: process.env.EMAIL_SERVICE || "Gmail",
@@ -19,7 +18,6 @@ const defaultHeaders = {
 };
 
 exports.handler = async function (event, context) {
-  // Handle CORS preflight
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
@@ -42,7 +40,6 @@ exports.handler = async function (event, context) {
     try {
       formData = JSON.parse(body);
     } catch (err) {
-      // If body is already an object (rare in Netlify), use it
       formData = typeof body === "object" ? body : {};
     }
 
@@ -63,7 +60,9 @@ exports.handler = async function (event, context) {
 
     const staffMailOptions = {
       from: `"Eldema Letap" <${process.env.EMAIL_USER}>`,
-      to: process.env.STAFF_EMAIL_RECIPIENT || "eldemaletapacademy@gmail.com <Eldema Letap>",
+      to:
+        process.env.STAFF_EMAIL_RECIPIENT ||
+        "eldemaletapacademy@gmail.com <Eldema Letap>",
       subject: `NEW VOLUNTEER APPLICATION: ${formData.full_name}`,
       html: `
                 <h2>A New Volunteer Application Has Arrived!</h2>
@@ -96,7 +95,6 @@ exports.handler = async function (event, context) {
             `,
     };
 
-    // Send emails 
     await transporter.sendMail(staffMailOptions);
     await transporter.sendMail(volunteerMailOptions);
 

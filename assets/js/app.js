@@ -8,7 +8,7 @@
 async function loadComponent(url, elementId) {
   try {
     const response = await fetch(url);
-    // Check for HTTP errors
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -21,7 +21,7 @@ async function loadComponent(url, elementId) {
     }
   } catch (error) {
     console.error(`Failed to load component from ${url}:`, error);
-    // Display a fallback message to the user
+
     const placeholder = document.getElementById(elementId);
     if (placeholder) {
       placeholder.innerHTML =
@@ -38,8 +38,6 @@ async function loadComponent(url, elementId) {
  * scroll effects, and carousel initialization.
  */
 document.addEventListener("DOMContentLoaded", () => {
-
-  // --- B. Modal Logic ---
   const modalHTML = `
       <div class="modal-overlay" id="volunteerModalOverlay">
         <div class="v-modal-content">
@@ -51,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <p>Are you passionate about making a difference? Eldema Letap Academy is looking for enthusiastic volunteers in various fields to help us achieve our mission.</p>
             <p>Your skills and time can help shape brighter futures!</p>
           </div>
-          <a href="https://eldemaletapacademy.org/volunteering/" class="modal-cta-button">Learn More & Volunteer</a>
+          <a href="https:
         </div>
       </div>
     `;
@@ -75,24 +73,21 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("eldemaVolunteerModalShown", "true");
     }
 
-    // Add event listeners only after the element is inserted
     if (closeVolunteerModalButton) {
       closeVolunteerModalButton.addEventListener("click", hideModal);
     }
 
     if (volunteerModalOverlay) {
       volunteerModalOverlay.addEventListener("click", function (event) {
-        // Close only if the click is directly on the overlay (not the content box)
         if (event.target === volunteerModalOverlay) {
           hideModal();
         }
       });
-      // Show the modal
+
       showModal();
     }
   }
 
-  // --- C. Scroll Reveal Effect (Intersection Observer) ---
   const scrollRevealElements = document.querySelectorAll(".scroll-reveal");
 
   const observerOptions = {
@@ -105,19 +100,17 @@ document.addEventListener("DOMContentLoaded", () => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("revealed");
-        observer.unobserve(entry.target); // Stop observing once revealed
+        observer.unobserve(entry.target);
       }
     });
   }, observerOptions);
 
   scrollRevealElements.forEach((el) => {
-    // Only observe elements that haven't been revealed yet
     if (!el.classList.contains("revealed")) {
       observer.observe(el);
     }
   });
 
-  // --- D. Bootstrap Carousel Initialization ---
   const reviewCarouselElement = document.getElementById("reviewCarousel");
   if (typeof bootstrap !== "undefined" && reviewCarouselElement) {
     const reviewCarousel = new bootstrap.Carousel(reviewCarouselElement, {
@@ -127,50 +120,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// async function loadGalleryImages() {
-//     const galleryContainer = document.querySelector('.gallery-content');
-//     if (!galleryContainer) return;
-
-//     try {
-//         const response = await fetch('/.netlify/functions/list-gallery-images'); 
-        
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! Status: ${response.status}`);
-//         }
-        
-//         // The response body is the array of image filenames
-//         const imageFiles = await response.json();
-
-//         let imageMarkup = '';
-//         imageFiles.forEach(fileName => {
-//             const imagePath = `../assets/images/gallery/${fileName}`;
-//             imageMarkup += `<img src="${imagePath}" alt="Eldema Letap Academy Gallery Photo" class="scroll-reveal fade-in">`;
-//         });
-
-//         galleryContainer.innerHTML = imageMarkup;
-        
-//         if (typeof initializeScrollReveal === 'function') {
-//              initializeScrollReveal(); 
-//         }
-        
-//     } catch (error) {
-//         console.error('Failed to load gallery images:', error);
-//         galleryContainer.innerHTML = '<p class="text-danger text-center p-5">Could not load gallery images. Please check the function deployment.</p>';
-//     }
-// }
-
-// Init
-document.addEventListener('DOMContentLoaded', () => {
-  // --- A. Load Reusable Components ---
+document.addEventListener("DOMContentLoaded", () => {
   loadComponent("/components/nav.html", "nav");
   loadComponent("/components/footer.html", "footer-placeholder");
 
-  // load gallery
-  if (document.querySelector('.gallery-content')) {
-        loadGalleryImages();
-    }
+  if (document.querySelector(".gallery-content")) {
+    loadGalleryImages();
+  }
 });
-
 
 /**
  * =================================================================
@@ -190,7 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ? submitButton.textContent
         : "Submit";
 
-      // 1. Client-Side Validation
       const consentCheckbox = document.getElementById("consent");
       if (consentCheckbox && !consentCheckbox.checked) {
         alert(
@@ -199,18 +155,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 2. Disable Button & Provide Feedback
       if (submitButton) {
         submitButton.textContent = "Submitting...";
         submitButton.disabled = true;
       }
 
-      // 3. Prepare Data
       const formData = new FormData(applicationForm);
       const data = {};
       formData.forEach((value, key) => (data[key] = value));
 
-      // 4. Asynchronous Submission
       try {
         const response = await fetch("/.netlify/functions/submit-application", {
           method: "POST",
@@ -221,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (response.ok) {
-          // Success Handler
           applicationForm.innerHTML = `
                         <div class="success-message text-center">
                             <i class="bi bi-check-circle-fill" style="font-size: 4rem; color: var(--color-primary);"></i>
@@ -249,7 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
           `There was an issue submitting your application. Please check your network connection or try again later. Details: ${error.message}`
         );
 
-        // Restore Button State
         if (submitButton) {
           submitButton.textContent = originalButtonText;
           submitButton.disabled = false;
